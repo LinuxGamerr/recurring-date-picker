@@ -129,7 +129,7 @@ export function RecurrenceOption({ config, onConfigChange }: RecurrenceOptionPro
                                     id={`day-${index}`}
                                     checked={config.weeklyDays?.includes(index)}
                                     onCheckedChange={(checked) => handleWeeklyDayChange(index, checked as boolean)}/>
-                                <Label htmlFor={`day-${index}`}>(day)</Label>
+                                <Label htmlFor={`day-${index}`}> {day} </Label>
                             </div>
                         ))}
                     </div>

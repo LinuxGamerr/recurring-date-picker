@@ -80,7 +80,7 @@ export function getRecurringDates (
     while (count < maxDates && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
 
         //add the current date if its valid
-        if (!isAfter(currentDate, addDays(startDate, -1)) && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
+        if (isAfter(currentDate, addDays(startDate, -1)) && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
             dates.push(currentDate)
         }
 

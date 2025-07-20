@@ -16,7 +16,6 @@ export function CalendarPreview({ config }: CalendarPreviewProps) {
     if (config.startDate) {
       const dates = getRecurringDates(config)
       setRecurringDates(dates)
-      console.log(dates);
     } else {
       setRecurringDates([])
     }
@@ -28,7 +27,7 @@ export function CalendarPreview({ config }: CalendarPreviewProps) {
 
   const modifiersStyles = {
     recurring: {
-      backgroundColor: "hsl(var(--primary))",
+      backgroundColor: "hsl(0 0 0)",
       color: "hsl(var(--primary-foreground))",
       borderRadius: "0.25rem",
     },
