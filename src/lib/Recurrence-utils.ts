@@ -247,3 +247,5 @@ export const monthNames = [
     "December"
 ];
 
+export const ordinalWeeks = ["first", "second", "third", "fourth", "last"];
+
