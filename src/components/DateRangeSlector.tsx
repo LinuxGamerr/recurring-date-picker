@@ -50,7 +50,7 @@ export default function DateRangeSelector({ startDate, onStartDateChange, endDat
             </div>
             <div className="grid gap-2">
                 <Label htmlFor="end-date">End Date (Optional)</Label>
-                <Popover>
+                <Popover open={endOpen} onOpenChange={setEndOpen}>
                     <PopoverTrigger asChild>
                         <Button
                         id="end-date"
