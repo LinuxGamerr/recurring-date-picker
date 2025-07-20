@@ -1,8 +1,6 @@
 import { getRecurringDates } from "../lib/Recurrence-utils"
 import type { RecurringConfig } from "../lib/Recurrence-utils"
-import { startOfDay, addDays } from "date-fns";
-
-const today = startOfDay(new Date());
+import { startOfDay } from "date-fns";
 
 test("Test Case 1 - Daily recurrence (interval 1)", () => {
     

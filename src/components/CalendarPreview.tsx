@@ -28,8 +28,8 @@ export function CalendarPreview({ config }: CalendarPreviewProps) {
 
   const modifiersStyles = {
     recurring: {
-      backgroundColor: "hsl(0 0 0)",
-      color: "hsl(var(--primary-foreground))",
+      backgroundColor: "hsl(var(--background))",
+      color: "hsl(var(--foreground))",
       borderRadius: "0.25rem",
     },
   }

@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Recurring Date Picker Component
 
-## Getting Started
+A customizable and reusable React component for selecting recurring dates, inspired by popular task management applications. Built with Next.js, Tailwind CSS, and `shadcn/ui`, this component offers a comprehensive solution for defining complex recurrence patterns and visualizing them on a calendar.
 
-First, run the development server:
+## Table of Contents
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+*   [Features](#features)
+*   [Technical Stack](#technical-stack)
+*   [Installation](#installation)
+*   [Usage](#usage)
+    *   [Component Structure](#component-structure)
+    *   [Integrating the Component](#integrating-the-component)
+*   [Customization](#customization)
+*   [Future Enhancements](#future-enhancements)
+*   [License](#license)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+*   **Flexible Recurrence Options**:
+    *   **Daily**: Recur every X days.
+    *   **Weekly**: Recur every X weeks, with selection of specific days of the week (e.g., "every 2 weeks on Monday and Wednesday").
+    *   **Monthly**: Recur every X months, with options for:
+        *   Specific day of the month (e.g., "the 15th of every month").
+        *   Ordinal patterns (e.g., "the second Tuesday of every month").
+    *   **Yearly**: Recur every X years, with options for:
+        *   Specific date (e.g., "March 15th every year").
+        *   Ordinal patterns (e.g., "the third Monday of March every year").
+*   **Date Range Selection**: Define a start date and an optional end date for the recurrence.
+*   **Mini Calendar Preview**: Visually highlights all calculated recurring dates on an interactive calendar, providing immediate feedback.
+*   **Responsive Design**: Built with Tailwind CSS for a mobile-first and adaptive user experience across various screen sizes.
+*   **Modular & Reusable**: Designed with clear separation of concerns, making it easy to integrate into any Next.js or React application.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Technical Stack
 
-## Learn More
+*   **Framework**: Next.js (App Router)
+*   **UI Library**: React
+*   **Styling**: Tailwind CSS
+*   **UI Components**: `shadcn/ui` (pre-installed and configured)
+*   **Date Manipulation**: `date-fns`
+*   **State Management**: React's `useState` hook (internal to the component)
 
-To learn more about Next.js, take a look at the following resources:
+## Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To integrate this component into your Next.js project:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1.  **Download the Code**: download the project archive and extract it.
+2.  **Copy Files**:
+    *   Copy the entire `components` directory (specifically `components/recurring-date-picker.tsx`, `components/date-range-selector.tsx`, `components/recurrence-options.tsx`, `components/calendar-preview.tsx`) into your project's `components` directory (e.g., `src/components/`).
+    *   Copy the `lib/recurrence-utils.ts` file into your project's `lib` directory (e.g., `src/lib/`).
+    *   Ensure your `tailwind.config.ts` and `app/globals.css` are set up for `shadcn/ui`
+3.  **Install Dependencies**: Navigate to your project's root directory and install the required packages. The `package.json` included with the download will list all necessary dependencies.
+    ```bash
+    npm install
+    # or
+    yarn install
+    # or
+    pnpm install
