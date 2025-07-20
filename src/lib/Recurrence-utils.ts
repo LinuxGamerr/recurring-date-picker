@@ -1,11 +1,12 @@
 import { addDays, addWeeks, addYears,
-    addMonths, startOfDay, isSameDay, isAfter,
+    addMonths, startOfDay,  isAfter,
     getDay, getDaysInMonth, setMonth, setDate,
     getMonth, getYear, isBefore
 } from "date-fns"
 
 export type RecurrenceType = "daily" | "weekly" | "monthly" | "yearly";
 
+// configuration for recurring date picker
 export type RecurringConfig = {
 
     startDate: Date;
@@ -37,6 +38,7 @@ const ordinalMap: Record<string, number> = {
     last: -1
 }
 
+
 const findNthDayofWeekInMonth = ( year: number,
         month: number,
         targetDayOfWeek: number,
@@ -48,6 +50,7 @@ const findNthDayofWeekInMonth = ( year: number,
 
     for (let i = 1; i <= daysInMonth; i++) {
 
+        // pushing the matching occurrances
         const day = new Date(year, month, i);
         if (getDay(day) === targetDayOfWeek) {
             occurrences.push(day)
@@ -59,7 +62,7 @@ const findNthDayofWeekInMonth = ( year: number,
         return occurrences.length > 0 ? occurrences[occurrences.length - 1] : null;
     }
 
-    else {
+    else { //fallback
 
         const index = ordinalMap[ordinal!] - 1;
         return occurrences.length > index ? occurrences[index] : null;
@@ -74,154 +77,158 @@ export function getRecurringDates (
 
     const { startDate, endDate, recurrenceType, interval } = config;
     const dates: Date[] = [];
+
     let currentDate = startOfDay(startDate);
-    let count = 0;
 
-    while (count < maxDates && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
+    // Date Validator to only pick date after start date and date before end date
+    const validateDate = (date: Date) => {
 
-        //add the current date if its valid
-        if (isAfter(currentDate, addDays(startDate, -1)) && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
-            dates.push(currentDate)
+        if (isAfter(date, addDays(startOfDay(new Date()), -1)) && isAfter(date, addDays(startDate, -1)) && (!endDate || isBefore(date, addDays(endDate, 1)))) {
+
+            dates.push(date);
         }
+    }
 
-        let nextDate: Date | null = null;
+    let count = 0
 
-        switch (recurrenceType) {
+    switch (recurrenceType) {
 
-            case "daily":
+        case "daily":
 
-                nextDate = addDays(currentDate, interval);
-                break;
+            
 
-                case "weekly":
+            while (maxDates > count && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
 
+                validateDate(currentDate);
+                currentDate = addDays(currentDate, interval);
+                count++;
+            }
+
+            break;
+
+        case "weekly":
+            
+             while (maxDates > count && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
+
+                // when no specific day selected
                 if (!config.weeklyDays || config.weeklyDays.length === 0) {
 
-                    nextDate = addWeeks(currentDate, 1); //if no specific days
+                    validateDate(currentDate);
+                    currentDate = addWeeks(currentDate, interval);
+                    count++;
                 }
 
                 else {
 
-                    let tempDate = addDays(currentDate, 1); // start checking fro mnext day
-                    let foundCurrentCycle = false;
+                    let tempDate;
 
-                    // check for next occurrence with the current week cycle
-                    for (let i = 0; i < 7; i++) {
+                    // picking the date that selected
+                    config.weeklyDays.forEach((entry) => {
 
-                        if (config.weeklyDays.includes(getDay(tempDate))) {
+                        tempDate = currentDate;
 
-                            nextDate = tempDate;
-                            foundCurrentCycle = true;
-                            break;
-                        }
+                        tempDate = addDays(tempDate, entry - getDay(tempDate));
+                        
+                        count++;
+                        validateDate(tempDate);
+                        
+                    });
 
-                        tempDate = addDays(tempDate, 1);
-                    }
-
-                    if (!foundCurrentCycle) {
-
-                        // if no day found in the current week cycle advance by interval weeks
-                        // and find the first matching day in new cycle
-
-                        tempDate = addWeeks(currentDate, interval);
-
-                        // conforming we land on one of the selected days
-                        while (!config.weeklyDays.includes(getDay(tempDate))) {
-
-                            tempDate = addDays(tempDate, 1);
-                        }
-
-                        nextDate = tempDate;
-                    }
+                    currentDate = addWeeks(currentDate, interval);
                 }
+            }
 
-                break;
+            break;
 
-            case "monthly":
+        case "monthly":
 
+            while (maxDates > count && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
+
+                // specifig day in month
                 if (config.monthlyType === "dayOfMonth" && config.monthlyDayOfMonth !== undefined) {
 
-                    const tempDate = addMonths(currentDate, interval)
+                    const day = Math.min(config.monthlyDayOfMonth, getDaysInMonth(currentDate));
 
-                    //set to the specified day of the month, handling month end
+                    currentDate = setDate(currentDate, day);
 
-                    const day = Math.min(config.monthlyDayOfMonth, getDaysInMonth(tempDate));
-                    nextDate = setDate(tempDate, day);
+                    validateDate(currentDate);
+
+                    count++;
+
+                    currentDate = addMonths(currentDate, interval);
                 }
 
+                // ordinal day in month
                 else if (config.monthlyType === "ordinal" && config.monthlyOrdinalWeek && config.monthlyOrdinalDayofWeek !== undefined) {
 
-                    const nextMonthDate = addMonths(currentDate, interval);
-                    const targetMonth = getMonth(nextMonthDate);
-                    const  targetYear = getYear(nextMonthDate);
-                    const foundDate = findNthDayofWeekInMonth(targetYear, targetMonth, config.monthlyOrdinalDayofWeek, config.monthlyOrdinalWeek);
+                    const targetmonth = getMonth(currentDate);
+                    const targetYear = getYear(currentDate);
 
-                    if (foundDate) {
-                        nextDate = foundDate;
+                    const date = findNthDayofWeekInMonth(targetYear, targetmonth, config.monthlyOrdinalDayofWeek, config.monthlyOrdinalWeek);
+
+                    if (date) {
+
+                        currentDate = date;
+                        validateDate(currentDate);
+                        count++;
+                        currentDate = addMonths(currentDate, interval)
                     }
+
                     else {
-                        //fallback if the nth day doesn't exist in the target month
-                        //advance by interval and try again
-                        nextDate = addMonths(currentDate, interval);
+
+                        count++;
+                        currentDate = addMonths(currentDate, interval);
                     }
                 }
-                else {
-                    nextDate = addMonths(currentDate, interval);
-                }
-                break;
 
-            case "yearly":
+                else {}
+            }
 
+            break;
+
+        case "yearly":
+
+            while (maxDates > count && (!endDate || isBefore(currentDate, addDays(endDate, 1)))) {
+
+                //specifig date in year
                 if (config.yearlyType === "specificDate" && config.yearlyMonth !== undefined && config.yearlyDayOfMonth !== undefined) {
 
-                    let tempDate = addYears(currentDate, interval);
-                    tempDate = setMonth(tempDate, config.yearlyMonth);
+                    currentDate = setMonth(currentDate, config.yearlyMonth);
 
-                    //Handle day of month for non-leap years
-                    const day = Math.min(config.yearlyDayOfMonth, getDaysInMonth(tempDate))
-                    nextDate = setDate(tempDate, day);
+                    const day = Math.min(config.yearlyDayOfMonth, getDaysInMonth(currentDate));
+
+                    currentDate = setDate(currentDate, day);
+
+                    validateDate(currentDate);
+
+                    currentDate = addYears(currentDate, interval);
+
+                    count++
                 }
 
-                else if (
+                // ordinal year in week
+                else if (config.yearlyType === "ordinal" && config.yearlyOrdinalDayofWeek !== undefined && config.yearlyOrdinalWeek && config.yearlyOrdinalMonth !== undefined) {
 
-                    config.yearlyType === "ordinal" &&
-                    config.yearlyOrdinalWeek &&
-                    config.yearlyOrdinalDayofWeek !== undefined &&
-                    config.yearlyOrdinalMonth !== undefined
-                ) {
+                    const targetYear = getYear(currentDate);
 
-                    const nextYearDate = addYears(currentDate, interval);
-                    const targetYear = getYear(nextYearDate);
+                    const date = findNthDayofWeekInMonth(targetYear, config.yearlyOrdinalMonth, config.yearlyOrdinalDayofWeek, config.yearlyOrdinalWeek);
 
-                    const foundDate = findNthDayofWeekInMonth(targetYear, config.yearlyOrdinalMonth, config.yearlyOrdinalDayofWeek, config.yearlyOrdinalWeek);
+                    if (date) {
 
-                    if (foundDate) {
+                        currentDate = date;
 
-                        nextDate = foundDate;
+                        validateDate(currentDate);
+                        count++;
+                        currentDate = addYears(currentDate, interval);
                     }
 
                     else {
 
-                        nextDate = addYears(currentDate, interval); // fallback
+                        count++;
+                        currentDate = addYears(currentDate, interval);
                     }
                 }
-
-                else {
-
-                    nextDate = addYears(currentDate, interval); //fallback
-                }
-
-                break;   
-        }
-
-        if (!nextDate || isSameDay(nextDate, currentDate)) {
-
-            //prevent infinite loops if nextDate not advance
-            nextDate = addDays(currentDate, 1); // fallback to advance by one day
-        }
-
-        currentDate = nextDate;
-        count++;
+            }
     }
 
     //Filtering dates before startDate and Dates after endDate
@@ -229,7 +236,7 @@ export function getRecurringDates (
 }
 
 // Days and Month List for UI Diaplay
-export const dayNames = ["Sun", "Mon", "Tur", "Wed", "Thu", "Fri", "Sat"];
+export const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export const monthNames = [
     

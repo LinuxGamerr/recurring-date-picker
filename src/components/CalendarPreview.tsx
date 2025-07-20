@@ -16,6 +16,7 @@ export function CalendarPreview({ config }: CalendarPreviewProps) {
     if (config.startDate) {
       const dates = getRecurringDates(config)
       setRecurringDates(dates)
+      console.log(dates);
     } else {
       setRecurringDates([])
     }
