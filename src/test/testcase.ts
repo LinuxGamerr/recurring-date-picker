@@ -94,3 +94,46 @@ test("Test Case 5 - Weekly recurrence every 2 weeks on Tuesdays", () => {
     "Tue Sep 23 2025",
   ])
 })
+
+test("Test Case 6 - Yearly Day of Month", () => {
+  const config: RecurringConfig = {
+    recurrenceType: "yearly",
+    interval: 1,
+    startDate: startOfDay(new Date("2025-09-01")),
+    endDate: startOfDay(new Date("2027-09-30")),
+    yearlyType: "specificDate",
+    yearlyMonth: 8, //september
+    yearlyDayOfMonth: startOfDay(new Date("2027-09-12")).getDate(),
+    
+  }
+
+  const result = getRecurringDates(config)
+
+  expect(result.map(d => d.toDateString())).toEqual([
+    "Fri Sep 12 2025",
+    "Sat Sep 12 2026",
+    "Sun Sep 12 2027",
+  ])
+})
+
+test("Test Case 7 - Yearly Ordinal", () => {
+  const config: RecurringConfig = {
+    recurrenceType: "yearly",
+    interval: 1,
+    startDate: startOfDay(new Date("2025-09-01")),
+    endDate: startOfDay(new Date("2027-09-30")),
+    yearlyType: "ordinal",
+    yearlyOrdinalWeek: "first",
+    yearlyOrdinalDayofWeek: 1, //monday
+    yearlyOrdinalMonth: 8, //september
+    
+  }
+
+  const result = getRecurringDates(config)
+
+  expect(result.map(d => d.toDateString())).toEqual([
+    "Mon Sep 01 2025",
+    "Mon Sep 07 2026",
+    "Mon Sep 06 2027",
+  ])
+})
