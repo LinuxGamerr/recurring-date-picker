@@ -98,7 +98,7 @@ export function RecurrenceOption({ config, onConfigChange }: RecurrenceOptionPro
                 </div>
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value="yearly" id="yearly"/>
-                    <Label htmlFor="yearly">Daily</Label>
+                    <Label htmlFor="yearly">Yearly</Label>
                 </div>
             </RadioGroup>
 
