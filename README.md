@@ -10,7 +10,6 @@ A reusable recurring date picker component built with **Next.js** and **Tailwind
 - Mini calendar preview showing all selected recurrence instances
 - Fully responsive UI
 - Clean and modular React components
-- Zustand for state management
 
 ##  Testing
 
@@ -21,7 +20,6 @@ A reusable recurring date picker component built with **Next.js** and **Tailwind
 
 - **Framework**: Next.js
 - **Styling**: Tailwind CSS
-- **State Management**: Zustand
 - **Testing**: React Testing Library + Jest
 
 ##  Getting Started
